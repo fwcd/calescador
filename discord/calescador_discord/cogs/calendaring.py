@@ -80,26 +80,23 @@ class Calendaring(commands.Cog):
             user = await self.api.user_by_discord_user_id(discord_user.id)
         except:
             # User seems to be unregistered, create him
-            user = await self.api.create_user(User(
+            user = User(
                 name=f'{discord_user.name}#{discord_user.discriminator}',
                 password=passgen(), # plaintext
                 discord_user_id=discord_user.id
-            ))
+            )
 
-        await discord_user.send([
-            'Hey! Since you recently reacted on an event, I thought it might be a good idea to make you an account, so here goes.',
-            '',
-            '```',
-            f'Username: {user.name}',
-            f'Password: {user.password}',
-            '```',
-            '',
-            f'You can use these to log in on <{self.web_url}>!',
-            '',
-            'Just a final note: Please make sure to save the password, I cannot show it to you again.',
-            '',
-            'Have fun! :D'
-        ])
+            await self.api.create_user(user)
+            await discord_user.send('\n'.join([
+                'Hey! Since you recently reacted on an event, I thought it might be a good idea to make you an account, so here goes.',
+                '```',
+                f'Username: {user.name}',
+                f'Password: {user.password}',
+                '```',
+                f'You can use these credentials to log in on <{self.web_url}>! Just a final note: Please make sure to save the password, I cannot show it to you again.',
+                '',
+                'Have fun! :D'
+            ]))
 
         # TODO: Option to reset user accounts on the server without deleting them?
         # TODO: Attendee counts (by emoji)

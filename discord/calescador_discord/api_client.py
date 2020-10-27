@@ -16,7 +16,7 @@ class APIClient:
                 if (r.status // 100) == 2:
                     return await r.json()
                 else:
-                    raise IOError(f'Got HTTP {r.status} from API!')
+                    raise IOError(f'Got HTTP {r.status} from API: {await r.text()}')
 
     async def create_event(self, event: Event) -> Event:
         """Creates a new calendar event on the server."""
@@ -48,20 +48,20 @@ class APIClient:
         response = await self.request('GET', f'/events/discord/{discord_message_id}')
         return Event.from_dict(response)
 
-    async def user(self, id) -> User:
+    async def create_user(self, user) -> User:
         """Creates a new user on the server. Note that the password should be *unhashed*."""
 
-        response = await self.request('POST', f'/users')
-        return Event.from_dict(response)
+        response = await self.request('POST', f'/users', data=user.to_dict())
+        return User.from_dict(response)
 
     async def user(self, id) -> User:
         """Fetches a single user by his id from the server."""
 
         response = await self.request('GET', f'/users/{id}')
-        return Event.from_dict(response)
+        return User.from_dict(response)
 
     async def user_by_discord_user_id(self, discord_user_id) -> User:
         """Fetches a single user by his Discord user id from the server."""
 
         response = await self.request('GET', f'/users/discord/{discord_user_id}')
-        return Event.from_dict(response)
+        return User.from_dict(response)

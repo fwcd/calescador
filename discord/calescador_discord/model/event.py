@@ -29,7 +29,7 @@ class Event:
     @staticmethod
     def from_dict(d: dict):
         return Event(
-            id=map_noneable(d.get('id', None), lambda s: int(s)),
+            id=d.get('id', None),
             name=d['name'],
             start_dt=dateutil.parser.parse(d['start_dt']),
             end_dt=dateutil.parser.parse(d['end_dt']),
@@ -40,7 +40,7 @@ class Event:
 
     def to_dict(self):
         return filter_not_none({
-            'id': map_noneable(self.id, lambda i: str(i)),
+            'id': self.id,
             'name': self.name,
             'start_dt': self.start_dt.isoformat(),
             'end_dt': self.end_dt.isoformat(),
