@@ -41,7 +41,15 @@ Route::post('/events', function (Request $request) {
         return response("$errorMessage\n", 400);
     }
 
-    // TODO
+    $event = new App\Models\Event;
+    $event->name = $request->name;
+    $event->start_dt = $request->start_dt;
+    $event->end_dt = $request->end_dt;
+    $event->location = $request->location ?? '';
+    $event->description = $request->description ?? '';
+    $event->save();
+
+    return response("Successfully created event!\n", 201);
 });
 
 /** Delete an existing calendar event. */
