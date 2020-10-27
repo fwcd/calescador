@@ -14,6 +14,6 @@ def create_bot(command_prefix: str, web_url: str):
         await bot.change_presence(activity=activity)
 
     bot.add_cog(Calendaring(bot, api=APIClient(f'{web_url}/api/v1'), web_url=web_url))
-    bot.add_cog(General())
+    bot.add_cog(General(bot))
 
     return bot
