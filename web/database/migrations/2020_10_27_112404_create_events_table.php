@@ -21,6 +21,7 @@ class CreateEventsTable extends Migration
             $table->dateTimeTz('end_dt');
             $table->string('location');
             $table->string('description');
+            $table->string('discord_message_id')->nullable();
 
             // TODO: Recurrences?
         });
