@@ -16,6 +16,9 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-interaction
       working-directory: web
+    - name: Generate application key
+      run: php artisan key:generate
+      working-directory: web
     - name: Execute tests
       run: vendor/bin/phpunit --verbose
       working-directory: web
