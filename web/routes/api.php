@@ -15,11 +15,15 @@ use Carbon\Carbon;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 // TODO: Require authentication on all routes
+
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+
+/** Fetches a list of all users. */
+Route::get('/users', function (Request $request) {
+    $users = App\Models\User::get();
+    return response()->json($users);
+});
 
 /** Fetch all calendar events. */
 Route::get('/events', function () {
