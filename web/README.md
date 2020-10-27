@@ -23,3 +23,7 @@ To run the development server, run
 `php artisan serve`
 
 This will serve the application on `http://localhost:8000`.
+
+### Tips
+* To create a new database migration, run e.g. `php artisan make:migration [name] --create=[tablename]`
+* To create a new model, run `php artisan make:model [name]`
