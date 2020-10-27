@@ -13,7 +13,8 @@ from calescador_discord.utils.discord import error_embed
 class Calendaring(commands.Cog):
     """A collection of calendaring commands."""
 
-    def __init__(self, api: APIClient):
+    def __init__(self, bot, api: APIClient):
+        self.bot = bot
         self.api = api
 
     def parse_event(self, raw):
@@ -66,6 +67,15 @@ class Calendaring(commands.Cog):
             '`28.10.2020, 16:00-17:00, Another event`'
         ]), error))
         raise error
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload):
+        channel = await self.bot.fetch_channel(payload.channel_id)
+        message = await channel.fetch_message(payload.message_id)
+        my_id = self.bot.user.id
+
+        if payload.user_id != my_id and message.author.id == my_id:
+            print('Got reaction on my own message!')
 
     def events_embed(self, events: List[Event]) -> Embed:
         embed = Embed(title=':calendar_spiral: All Events')

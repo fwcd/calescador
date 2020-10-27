@@ -13,7 +13,7 @@ def create_bot(command_prefix, api_url):
         activity = Activity(name=f'{command_prefix}help', type=ActivityType.listening)
         await bot.change_presence(activity=activity)
 
-    bot.add_cog(Calendaring(APIClient(api_url)))
+    bot.add_cog(Calendaring(bot, api=APIClient(api_url)))
     bot.add_cog(General())
 
     return bot
