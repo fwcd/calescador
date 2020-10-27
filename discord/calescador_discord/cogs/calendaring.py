@@ -71,7 +71,7 @@ class Calendaring(commands.Cog):
         embed = Embed(title=':calendar_spiral: All Events')
 
         for (date, events) in itertools.groupby(events, lambda e: e.start_dt.date()):
-            lines = [f'{format_time(e.start_dt.time())} - {format_time(e.end_dt.time())}: {e.name}' for e in events]
+            lines = [f'{format_time(e.start_dt.time())} - {format_time(e.end_dt.time())}: {e.name} (ID: {e.id})' for e in events]
             embed.add_field(name=format_date(date), value='\n'.join(lines), inline=False)
 
         return embed
