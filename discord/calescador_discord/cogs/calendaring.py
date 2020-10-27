@@ -100,6 +100,7 @@ class Calendaring(commands.Cog):
         ])
 
         # TODO: Option to reset user accounts on the server without deleting them?
+        # TODO: Attendee counts (by emoji)
         # TODO: Actually add the attendee
 
     @commands.Cog.listener()
