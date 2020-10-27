@@ -4,7 +4,7 @@ The Discord interface.
 ## Development
 
 ### Setup
-Run `pip3 install -r requirements.txt` to install the dependencies.
+First make sure that you have Python 3.7+ installed. Then run `pip3 install -r requirements.txt` to install the dependencies.
 
 ### Running
 Make sure that the following environment variables are set:

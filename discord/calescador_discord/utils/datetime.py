@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, date, time, timedelta
 
 WEEKDAYS = {
     # English
@@ -20,49 +20,49 @@ WEEKDAYS = {
     'sonntag': 6
 }
 
-def parse_date(s):
+def parse_date(s: str) -> date:
     """Parses a weekday or a date in dd.mm.yyyy format."""
 
     try:
-        return parse_weekday(s) or datetime.strptime(s, '%d.%m.%Y').date()
+        return next_weekday(datetime.now().date(), parse_weekday(s))
     except ValueError:
-        return None
+        return datetime.strptime(s, '%d.%m.%Y').date()
 
-def parse_weekday(s):
+def parse_weekday(s: str) -> int:
     """Parses a weekday in natural language."""
 
-    exact = WEEKDAYS.get(s, None)
-    if exact:
+    exact = WEEKDAYS.get(s.lower(), None)
+    if exact != None:
         return exact
 
     # Try to find abbreviation
-    for weekday in WEEKDAYS:
-        if weekday.startswith(s):
-            return weekday
+    for (name, i) in WEEKDAYS:
+        if name.startswith(s.lower()):
+            return i
 
-    return None
+    return ValueError('Could not parse weekday!')
 
-def parse_time(s):
+def parse_time(s: str) -> time:
     """Parses an hh:mm-formatted time."""
 
     return datetime.strptime(s, '%H:%M').time()
 
-def next_weekday(date, weekday):
+def next_weekday(date: date, weekday: int):
     """Fetches the next occurrence of the given weekday."""
 
     days_ahead = (weekday - date.weekday() + 7) % 7
-    return date + datetime.timedelta(days=days_ahead)
+    return date + timedelta(days=days_ahead)
 
-def format_date(date):
+def format_date(date: date) -> str:
     return date.strftime('%d.%m.%Y')
 
-def format_time(time):
+def format_time(time: time) -> str:
     return time.strftime('%H:%M')
 
-def format_datetime(dt):
+def format_datetime(dt: datetime) -> str:
     return f'{format_date(dt.date())} {format_time(dt.time())}'
 
-def format_datetime_span(dt1, dt2):
+def format_datetime_span(dt1: datetime, dt2: datetime) -> str:
     if dt1.date() == dt2.date():
         return f'{format_date(dt1.date())} {format_time(dt1.time())} - {format_time(dt2.time())}'
     else:

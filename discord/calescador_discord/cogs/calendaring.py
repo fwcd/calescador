@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 from discord import Embed
 from discord.ext import commands
 
@@ -20,17 +20,17 @@ class Calendaring(commands.Cog):
         split = [s.strip() for s in raw.split(',')]
 
         if len(split) < 3:
-            return None
+            raise ValueError('Please use a comma as separator!')
 
         day = parse_date(split[0])
         times = [parse_time(s.strip()) for s in split[1].split('-')]
         name = split[2]
 
         if len(times) not in [1, 2]:
-            return None
+            raise ValueError('Please provide a start (and optionally an end) time!')
 
         start_dt = datetime.combine(day, times[0])
-        end_dt = datetime.combine(day, times[1]) if len(times) > 1 else start_dt + datetime.timedelta(hours=2)
+        end_dt = datetime.combine(day, times[1]) if len(times) > 1 else start_dt + timedelta(hours=2)
 
         return Event(
             name=name,
@@ -39,18 +39,14 @@ class Calendaring(commands.Cog):
         )
 
     @commands.command(brief='Creates a new event')
-    async def create(self, ctx, arg):
-        event = self.parse_event(arg)
+    async def create(self, ctx, *args):
+        event = self.parse_event(' '.join(args))
+        event = self.api.create_event(event)
 
-        if event:
-            event = self.api.create_event(event)
-
-            await ctx.send(Embed(
-                title=f':calendar_spiral: {event.name}',
-                description=f'**{format_datetime_span(event.start_dt, event.end_dt)}**'
-            ))
-        else:
-            await ctx.send('')
+        await ctx.send(embed=Embed(
+            title=f':calendar_spiral: New Event `{event.name}`',
+            description=format_datetime_span(event.start_dt, event.end_dt)
+        ))
 
     @create.error
     async def create_error(self, ctx, error):
@@ -61,3 +57,4 @@ class Calendaring(commands.Cog):
             '`monday, 19:00, Some event`',
             '`28.10.2020, 16:00-17:00, Another event`'
         ]), error))
+        raise error
