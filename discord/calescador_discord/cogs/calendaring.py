@@ -3,19 +3,22 @@ import itertools
 from datetime import datetime, timedelta
 from discord import Embed
 from discord.ext import commands
+from passgen import passgen
 from typing import List
 
 from calescador_discord.api_client import APIClient
 from calescador_discord.model.event import Event
+from calescador_discord.model.user import User
 from calescador_discord.utils.datetime import parse_date, parse_time, next_weekday, format_date, format_time, format_datetime_span
 from calescador_discord.utils.discord import error_embed
 
 class Calendaring(commands.Cog):
     """A collection of calendaring commands."""
 
-    def __init__(self, bot, api: APIClient):
+    def __init__(self, bot, api: APIClient, web_url: str):
         self.bot = bot
         self.api = api
+        self.web_url = web_url
 
     def parse_event(self, raw):
         """Parses an event from the syntax `[day/date], [time(s)], [name]`."""
@@ -68,19 +71,51 @@ class Calendaring(commands.Cog):
         ]), error))
         raise error
 
-    async def add_attendee(self, discord_user_id, event_id):
+    async def add_attendee(self, discord_user, event_id):
         """Adds an attendee to the given event, creating the necessary user if it not already exists."""
 
+        try:
+            user = await self.api.user_by_discord_user_id(discord_user.id)
+        except:
+            # User seems to be unregistered, create him
+            user = await self.api.create_user(User(
+                name=f'{discord_user.name}#{discord_user.discriminator}',
+                password=passgen(), # plaintext
+                discord_user_id=discord_user.id
+            ))
 
+        await discord_user.send([
+            'Hey! Since you recently reacted on an event, I thought it might be a good idea to make you an account, so here goes.',
+            '',
+            '```',
+            f'Username: {user.name}',
+            f'Password: {user.password}',
+            '```',
+            '',
+            f'You can use these to log in on <{self.web_url}>!',
+            '',
+            'Just a final note: Please make sure to save the password, I cannot show it to you again.',
+            '',
+            'Have fun! :D'
+        ])
+
+        # TODO: Option to reset user accounts on the server without deleting them?
+        # TODO: Actually add the attendee
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        channel = await self.bot.fetch_channel(payload.channel_id)
+        channel = self.bot.get_channel(payload.channel_id)
+        user = self.bot.get_user(payload.user_id)
         message = await channel.fetch_message(payload.message_id)
         my_id = self.bot.user.id
 
-        if payload.user_id != my_id and message.author.id == my_id:
-            await self.add_attendee()
+        if channel == None or user == None or message == None:
+            print("Warning: No channel/user/message found after reaction!")
+            return
+
+        if user.id != my_id and message.author.id == my_id:
+            event = await self.api.event_by_discord_message_id(message.id)
+            await self.add_attendee(user, event.id)
 
     def events_embed(self, events: List[Event]) -> Embed:
         embed = Embed(title=':calendar_spiral: All Events')

@@ -31,6 +31,12 @@ Route::get('/users/{id}', function ($id) {
     return response()->json($user);
 });
 
+/** Fetches a user by Discord user ID. */
+Route::get('/users/discord/{id}', function ($id) {
+    $user = App\Models\User::where('discord_user_id', '==', $id)->firstOrFail();
+    return response()->json($user);
+});
+
 /** Creates a new user. */
 Route::post('/users', function (Request $request) {
     $validator = Validator::make($request->all(), [

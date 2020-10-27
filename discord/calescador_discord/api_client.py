@@ -2,6 +2,7 @@ import aiohttp
 from typing import List
 
 from calescador_discord.model.event import Event
+from calescador_discord.model.user import User
 
 class APIClient:
     """A wrapper around the Calescador web API."""

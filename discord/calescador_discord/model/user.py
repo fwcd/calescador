@@ -1,3 +1,5 @@
+from typing import Optional
+
 from calescador_discord.utils.general import filter_not_none, map_noneable
 
 class User:
