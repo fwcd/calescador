@@ -1,0 +1,27 @@
+name: Calescador Web
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+        extensions: mbstring, dom, mysql
+    - name: Set up env
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      working-directory: web
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction
+      working-directory: web
+    - name: Generate application key
+      run: php artisan key:generate
+      working-directory: web
+    - name: Execute tests
+      run: vendor/bin/phpunit --verbose
+      working-directory: web
