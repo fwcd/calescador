@@ -105,23 +105,49 @@ class Calendaring(commands.Cog):
         # TODO: Option to reset user accounts on the server without deleting them?
         # TODO: Actually add the attendee
 
-    @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload):
+    async def remove_attendance(self, discord_user, event_id):
+        # TODO
+        pass
+
+    async def extract_reaction_payload(self, payload):
         count = emoji_to_number(payload.emoji.name)
 
-        if count != None:
-            channel = self.bot.get_channel(payload.channel_id)
-            user = self.bot.get_user(payload.user_id)
-            message = await channel.fetch_message(payload.message_id)
-            my_id = self.bot.user.id
+        if count == None:
+            # Ignore other emojis
+            return None
 
-            if channel == None or user == None or message == None:
-                print("Warning: No channel/user/message found after reaction!")
-                return
+        channel = self.bot.get_channel(payload.channel_id)
+        user = self.bot.get_user(payload.user_id)
+        message = await channel.fetch_message(payload.message_id)
+        my_id = self.bot.user.id
 
-            if user.id != my_id and message.author.id == my_id:
-                event = await self.api.event_by_discord_message_id(message.id)
-                await self.add_attendance(user, event.id, count)
+        if channel == None or user == None or message == None:
+            print("Warning: No channel/user/message found after reaction!")
+            return None
+
+        if user.id == my_id or message.author.id != my_id:
+            # Ignore own reactions and reactions to other messages
+            return None
+
+        return (count, channel, user, message)
+
+    @commands.Cog.listener()
+    async def on_raw_reaction_add(self, payload):
+        extracted = self.extract_reaction_payload(payload)
+
+        if extracted != None:
+            (count, channel, user, message) = extracted
+            event = await self.api.event_by_discord_message_id(message.id)
+            await self.add_attendance(user, event.id, count)
+
+    @commands.Cog.listener
+    async def on_raw_reaction_remove(self, payload):
+        extracted = self.extract_reaction_payload(payload)
+
+        if extracted != None:
+            (count, channel, user, message) = extracted
+            event = await self.api.event_by_discord_message_id(message.id)
+            await self.remove_attendance(user, event.id)
 
     def events_embed(self, events: List[Event]) -> Embed:
         embed = Embed(title=':calendar_spiral: All Events')
