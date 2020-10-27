@@ -1,0 +1,19 @@
+name: Calescador Web
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+        extensions: mbstring, dom, mysql
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction --no-suggest
+    - name: Execute tests
+      run: vendor/bin/phpunit --verbose
