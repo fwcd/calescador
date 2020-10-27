@@ -22,7 +22,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 /** Fetch all calendar events. */
 Route::get('/events', function () {
-    // TODO
+    $events = App\Models\Event::orderBy('start_dt', 'asc')->get();
+
+    return $events->toJson();
 });
 
 /** Create a new calendar event. */
