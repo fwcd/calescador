@@ -11,6 +11,7 @@ from calescador_discord.model.event import Event
 from calescador_discord.model.user import User
 from calescador_discord.utils.datetime import parse_date, parse_time, next_weekday, format_date, format_time, format_datetime_span
 from calescador_discord.utils.discord import error_embed
+from calescador_discord.utils.emoji import number_to_emoji, emoji_to_number
 
 class Calendaring(commands.Cog):
     """A collection of calendaring commands."""
@@ -62,6 +63,9 @@ class Calendaring(commands.Cog):
         event.discord_message_id = sent.id
         await self.api.create_event(event)
 
+        for i in range(1, 5):
+            await sent.add_reaction(number_to_emoji(i))
+
     @create.error
     async def create_error(self, ctx, error):
         await ctx.send(embed=error_embed('\n'.join([
@@ -73,8 +77,8 @@ class Calendaring(commands.Cog):
         ]), error))
         raise error
 
-    async def add_attendee(self, discord_user, event_id):
-        """Adds an attendee to the given event, creating the necessary user if it not already exists."""
+    async def add_attendance(self, discord_user, event_id, count):
+        """Adds a user with the given attendance count to the event, creating the necessary user if it not already exists."""
 
         try:
             user = await self.api.user_by_discord_user_id(discord_user.id)
@@ -99,23 +103,25 @@ class Calendaring(commands.Cog):
             ]))
 
         # TODO: Option to reset user accounts on the server without deleting them?
-        # TODO: Attendee counts (by emoji)
         # TODO: Actually add the attendee
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        channel = self.bot.get_channel(payload.channel_id)
-        user = self.bot.get_user(payload.user_id)
-        message = await channel.fetch_message(payload.message_id)
-        my_id = self.bot.user.id
+        count = emoji_to_number(payload.emoji.name)
 
-        if channel == None or user == None or message == None:
-            print("Warning: No channel/user/message found after reaction!")
-            return
+        if count != None:
+            channel = self.bot.get_channel(payload.channel_id)
+            user = self.bot.get_user(payload.user_id)
+            message = await channel.fetch_message(payload.message_id)
+            my_id = self.bot.user.id
 
-        if user.id != my_id and message.author.id == my_id:
-            event = await self.api.event_by_discord_message_id(message.id)
-            await self.add_attendee(user, event.id)
+            if channel == None or user == None or message == None:
+                print("Warning: No channel/user/message found after reaction!")
+                return
+
+            if user.id != my_id and message.author.id == my_id:
+                event = await self.api.event_by_discord_message_id(message.id)
+                await self.add_attendance(user, event.id, count)
 
     def events_embed(self, events: List[Event]) -> Embed:
         embed = Embed(title=':calendar_spiral: All Events')

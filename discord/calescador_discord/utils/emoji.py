@@ -1,3 +1,5 @@
+from typing import Optional
+
 NUMBER_TO_EMOJI = {
     0: "0⃣",
     1: "1⃣",
@@ -13,8 +15,8 @@ NUMBER_TO_EMOJI = {
 
 EMOJI_TO_NUMBER = {v: k for k, v in NUMBER_TO_EMOJI.items()}
 
-def number_to_emoji(n: int) -> str:
-    return NUMBER_TO_EMOJI[n]
+def number_to_emoji(n: int) -> Optional[str]:
+    return NUMBER_TO_EMOJI.get(n, None)
 
-def emoji_to_number(e: str) -> int:
-    return EMOJI_TO_NUMBER[e]
+def emoji_to_number(e: str) -> Optional[int]:
+    return EMOJI_TO_NUMBER.get(e, None)
