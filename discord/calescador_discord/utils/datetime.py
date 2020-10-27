@@ -30,17 +30,19 @@ def parse_date(s: str) -> date:
 
 def parse_weekday(s: str) -> int:
     """Parses a weekday in natural language."""
+    if s == "":
+        raise ValueError('Cannot parse empty string as weekday!')
 
     exact = WEEKDAYS.get(s.lower(), None)
     if exact != None:
         return exact
 
     # Try to find abbreviation
-    for (name, i) in WEEKDAYS:
+    for (name, i) in WEEKDAYS.items():
         if name.startswith(s.lower()):
             return i
 
-    return ValueError('Could not parse weekday!')
+    raise ValueError('Could not parse weekday!')
 
 def parse_time(s: str) -> time:
     """Parses an hh:mm-formatted time."""
@@ -60,10 +62,10 @@ def format_time(time: time) -> str:
     return time.strftime('%H:%M')
 
 def format_datetime(dt: datetime) -> str:
-    return f'{format_date(dt.date())} {format_time(dt.time())}'
+    return f'{format_date(dt.date())}, {format_time(dt.time())}'
 
 def format_datetime_span(dt1: datetime, dt2: datetime) -> str:
     if dt1.date() == dt2.date():
-        return f'{format_date(dt1.date())} {format_time(dt1.time())} - {format_time(dt2.time())}'
+        return f'{format_date(dt1.date())}, {format_time(dt1.time())} - {format_time(dt2.time())}'
     else:
         return f'{format_datetime(dt1)} - {format_datetime(dt2)}'
