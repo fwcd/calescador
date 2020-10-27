@@ -40,7 +40,8 @@ Route::post('/events', function (Request $request) {
         'start_dt' => 'required|date',
         'end_dt' => 'required|date|after:start_dt',
         'location' => 'max:255',
-        'description' => 'max:2047'
+        'description' => 'max:2047',
+        'discord_message_id' => 'max:127'
     ]);
 
     if ($validator->fails()) {
@@ -55,6 +56,7 @@ Route::post('/events', function (Request $request) {
     $event->end_dt = $request->end_dt;
     $event->location = $request->location ?? '';
     $event->description = $request->description ?? '';
+    $event->discord_message_id = $request->discord_message_id;
     $event->save();
 
     return response($event->toJson(), 201);
