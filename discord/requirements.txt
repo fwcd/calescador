@@ -1,2 +1,3 @@
 discord.py>=1.5,<1.6
 aiohttp
+python-dateutil>=2.8,<2.9

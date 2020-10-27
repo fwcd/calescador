@@ -2,9 +2,11 @@ import json
 from datetime import datetime, timedelta
 from typing import Optional
 
-from calescador_discord.utils.general import filter_not_none
+from calescador_discord.utils.general import filter_not_none, map_noneable
 
 class Event:
+    """A calendar event."""
+
     def __init__(
         self,
         id: Optional[int]=None,
@@ -25,28 +27,23 @@ class Event:
 
     @staticmethod
     def from_dict(d: dict):
-        start_dt = datetime.fromisoformat(d['start_dt'])
-        end_dt = datetime.fromisoformat(d['end_dt'])
-        id = d.get('id', None)
-        discord_message_id = d.get('discord_message_id', None)
-
         return Event(
-            id=int(id) if id else None,
+            id=map_noneable(d.get('id', None), lambda s: int(s)),
             name=d['name'],
-            start_dt=start_dt,
-            end_dt=end_dt,
+            start_dt=datetime.fromisoformat(d['start_dt']),
+            end_dt=datetime.fromisoformat(d['end_dt']),
             location=d['location'],
             description=d['description'],
-            discord_message_id=int(discord_message_id) if discord_message_id else None
+            discord_message_id=map_noneable(d.get('discord_message_id', None), lambda s: int(s))
         )
 
     def to_dict(self):
         return filter_not_none({
-            'id': str(self.id) if self.id else None,
+            'id': map_noneable(self.id, lambda i: str(i)),
             'name': self.name,
             'start_dt': self.start_dt.isoformat(),
             'end_dt': self.end_dt.isoformat(),
             'location': self.location,
             'description': self.description,
-            'discord_message_id': str(self.discord_message_id) if self.discord_message_id else None
+            'discord_message_id': map_noneable(self.discord_message_id, lambda i: str(i))
         })
