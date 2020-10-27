@@ -33,6 +33,18 @@ Route::get('/events/upcoming', function () {
     return $events->toJson();
 });
 
+/** Fetch an event by id. */
+Route::get('/events/{id}', function ($id) {
+    $event = App\Models\Event::findOrFail($id);
+    return $event->toJson();
+});
+
+/** Fetch events by Discord message id. */
+Route::get('/events/discord/{id}', function ($id) {
+    $event = App\Models\Event::where('discord_message_id', '==', $id)->firstOrFail();
+    return $event->toJson();
+});
+
 /** Create a new calendar event. */
 Route::post('/events', function (Request $request) {
     $validator = Validator::make($request->all(), [
