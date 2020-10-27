@@ -31,11 +31,10 @@ class User extends Authenticatable
     ];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
+     * The events the user attends.
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function events()
+    {
+        return $this->belongsToMany('App\Models\Event');
+    }
 }

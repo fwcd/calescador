@@ -18,4 +18,12 @@ class Event extends Model
         'start_dt' => 'datetime',
         'end_dt' => 'datetime',
     ];
+
+    /**
+     * The attending users.
+     */
+    public function users()
+    {
+        return $this->belongsToMany('App\Models\User');
+    }
 }
