@@ -54,6 +54,7 @@ Route::post('/users', function (Request $request) {
     $user->name = $request->name;
     $user->password = Hash::make($request->password);
     $user->discord_user_id = $request->discord_user_id;
+    $user->save();
 
     return response()->json($user, 201);
 });

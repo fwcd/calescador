@@ -35,5 +35,6 @@ class User:
         return filter_not_none({
             'id': self.id,
             'name': self.name,
-            'password': self.password
+            'password': self.password,
+            'discord_user_id': self.discord_user_id
         })
