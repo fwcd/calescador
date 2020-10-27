@@ -17,3 +17,20 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+// TODO: Require authentication on all routes
+
+/** Fetch all calendar events. */
+Route::get('/events', function () {
+    // TODO
+});
+
+/** Create a new calendar event. */
+Route::post('/events', function (Request $request) {
+    // TODO
+});
+
+/** Delete an existing calendar event. */
+Route::delete('/events/{id}', function ($id) {
+    // TODO
+});
