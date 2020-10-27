@@ -33,3 +33,9 @@ class APIClient:
 
         response = requests.get(f'{self.url}/events/{id}').json()
         return Event.from_dict(response)
+
+    def event_by_discord_message_id(self, discord_message_id) -> Event:
+        """Fetches a single event by Discord message id from the server."""
+
+        response = requests.get(f'{self.url}/events/discord/{discord_message_id}').json()
+        return Event.from_dict(response)
