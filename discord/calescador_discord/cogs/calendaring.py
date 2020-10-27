@@ -1,11 +1,12 @@
 import re
+import itertools
 from datetime import datetime, timedelta
 from discord import Embed
 from discord.ext import commands
 
 from calescador_discord.api_client import APIClient
 from calescador_discord.model.event import Event
-from calescador_discord.utils.datetime import parse_date, parse_time, next_weekday, format_datetime_span
+from calescador_discord.utils.datetime import parse_date, parse_time, next_weekday, format_date, format_time, format_datetime_span
 from calescador_discord.utils.discord import error_embed
 
 class Calendaring(commands.Cog):
@@ -57,4 +58,20 @@ class Calendaring(commands.Cog):
             '`monday, 19:00, Some event`',
             '`28.10.2020, 16:00-17:00, Another event`'
         ]), error))
+        raise error
+
+    @commands.command(brief='Fetches all events in the calendar')
+    async def events(self, ctx):
+        events = self.api.events()
+        embed = Embed(title=':calendar_spiral: All Events')
+
+        for (date, events) in itertools.groupby(events, lambda e: e.start_dt.date()):
+            lines = [f'{format_time(e.start_dt.time())} - {format_time(e.end_dt.time())}: {e.name}' for e in events]
+            embed.add_field(name=format_date(date), value='\n'.join(lines), inline=False)
+
+        await ctx.send(embed=embed)
+
+    @events.error
+    async def events_error(self, ctx, error):
+        await ctx.send(embed=error_embed('Could not fetch all events!', error))
         raise error
