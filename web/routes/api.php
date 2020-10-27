@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Carbon\Carbon;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,6 +24,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 /** Fetch all calendar events. */
 Route::get('/events', function () {
     $events = App\Models\Event::orderBy('start_dt', 'asc')->get();
+    return $events->toJson();
+});
+
+/** Fetch upcoming calendar events. */
+Route::get('/events/upcoming', function () {
+    $events = App\Models\Event::orderBy('start_dt', 'asc')->where('start_dt', '>=', Carbon::now())->get();
     return $events->toJson();
 });
 

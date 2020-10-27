@@ -3,6 +3,7 @@ import itertools
 from datetime import datetime, timedelta
 from discord import Embed
 from discord.ext import commands
+from typing import List
 
 from calescador_discord.api_client import APIClient
 from calescador_discord.model.event import Event
@@ -60,16 +61,24 @@ class Calendaring(commands.Cog):
         ]), error))
         raise error
 
-    @commands.command(brief='Fetches all events in the calendar')
-    async def events(self, ctx):
-        events = self.api.events()
+    def events_embed(self, events: List[Event]) -> Embed:
         embed = Embed(title=':calendar_spiral: All Events')
 
         for (date, events) in itertools.groupby(events, lambda e: e.start_dt.date()):
             lines = [f'{format_time(e.start_dt.time())} - {format_time(e.end_dt.time())}: {e.name}' for e in events]
             embed.add_field(name=format_date(date), value='\n'.join(lines), inline=False)
 
-        await ctx.send(embed=embed)
+        return embed
+
+    @commands.command(brief='Fetches upcoming events in the calendar')
+    async def upcoming(self, ctx):
+        events = self.api.upcoming_events()
+        await ctx.send(embed=self.events_embed(events))
+
+    @commands.command(brief='Fetches all events in the calendar')
+    async def events(self, ctx):
+        events = self.api.events()
+        await ctx.send(embed=self.events_embed(events))
 
     @events.error
     async def events_error(self, ctx, error):

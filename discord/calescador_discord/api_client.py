@@ -22,6 +22,12 @@ class APIClient:
         response = requests.get(f'{self.url}/events').json()
         return [Event.from_dict(e) for e in response]
 
+    def upcoming_events(self) -> List[Event]:
+        """Fetches upcoming calendar events from the server."""
+
+        response = requests.get(f'{self.url}/events/upcoming').json()
+        return [Event.from_dict(e) for e in response]
+
     def event(self, id) -> Event:
         """Fetches a single event from the server."""
 
