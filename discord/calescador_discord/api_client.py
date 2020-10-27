@@ -36,7 +36,7 @@ class APIClient:
         return [Event.from_dict(e) for e in response]
 
     async def event(self, id) -> Event:
-        """Fetches a single event from the server."""
+        """Fetches a single event by its id from the server."""
 
         response = await self.request('GET', f'/events/{id}')
         return Event.from_dict(response)
@@ -45,4 +45,22 @@ class APIClient:
         """Fetches a single event by Discord message id from the server."""
 
         response = await self.request('GET', f'/events/discord/{discord_message_id}')
+        return Event.from_dict(response)
+
+    async def user(self, id) -> User:
+        """Creates a new user on the server. Note that the password should be *unhashed*."""
+
+        response = await self.request('POST', f'/users')
+        return Event.from_dict(response)
+
+    async def user(self, id) -> User:
+        """Fetches a single user by his id from the server."""
+
+        response = await self.request('GET', f'/users/{id}')
+        return Event.from_dict(response)
+
+    async def user_by_discord_user_id(self, discord_user_id) -> User:
+        """Fetches a single user by his Discord user id from the server."""
+
+        response = await self.request('GET', f'/users/discord/{discord_user_id}')
         return Event.from_dict(response)

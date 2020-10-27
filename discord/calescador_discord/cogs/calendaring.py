@@ -68,6 +68,11 @@ class Calendaring(commands.Cog):
         ]), error))
         raise error
 
+    async def add_attendee(self, discord_user_id, event_id):
+        """Adds an attendee to the given event, creating the necessary user if it not already exists."""
+
+
+
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
         channel = await self.bot.fetch_channel(payload.channel_id)
@@ -75,7 +80,7 @@ class Calendaring(commands.Cog):
         my_id = self.bot.user.id
 
         if payload.user_id != my_id and message.author.id == my_id:
-            print('Got reaction on my own message!')
+            await self.add_attendee()
 
     def events_embed(self, events: List[Event]) -> Embed:
         embed = Embed(title=':calendar_spiral: All Events')

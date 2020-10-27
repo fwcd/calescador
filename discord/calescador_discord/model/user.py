@@ -3,8 +3,8 @@ from calescador_discord.utils.general import filter_not_none, map_noneable
 class User:
     """
     A user (in the Calescador Web backend). The password
-    shall be UNHASHED in User instances sent to the database
-    for creation and is HASHED in instances from database
+    shall be *unhashed* in User instances sent to the database
+    for creation and is *hashed* in instances from database
     queries.
     """
 
