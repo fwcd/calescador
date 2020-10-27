@@ -1,4 +1,5 @@
 import json
+import dateutil.parser
 from datetime import datetime, timedelta
 from typing import Optional
 
@@ -30,8 +31,8 @@ class Event:
         return Event(
             id=map_noneable(d.get('id', None), lambda s: int(s)),
             name=d['name'],
-            start_dt=datetime.fromisoformat(d['start_dt']),
-            end_dt=datetime.fromisoformat(d['end_dt']),
+            start_dt=dateutil.parser.parse(d['start_dt']),
+            end_dt=dateutil.parser.parse(d['end_dt']),
             location=d['location'],
             description=d['description'],
             discord_message_id=map_noneable(d.get('discord_message_id', None), lambda s: int(s))
