@@ -27,6 +27,18 @@ Route::get('/events', function () {
 
 /** Create a new calendar event. */
 Route::post('/events', function (Request $request) {
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|max:255',
+        'start_dt' => 'required|date',
+        'end_dt' => 'required|date|after:start_dt',
+        'location' => 'max:255',
+        'description' => 'max:2047'
+    ]);
+
+    if ($validator->fails()) {
+        return response('Invalid parameters!', 400);
+    }
+
     // TODO
 });
 
