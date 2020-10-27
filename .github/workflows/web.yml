@@ -13,6 +13,9 @@ jobs:
       with:
         php-version: 7.4
         extensions: mbstring, dom, mysql
+    - name: Set up env
+      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      working-directory: web
     - name: Install dependencies
       run: composer install --prefer-dist --no-interaction
       working-directory: web
