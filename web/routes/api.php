@@ -23,7 +23,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 /** Fetch all calendar events. */
 Route::get('/events', function () {
     $events = App\Models\Event::orderBy('start_dt', 'asc')->get();
-
     return $events->toJson();
 });
 
@@ -51,10 +50,12 @@ Route::post('/events', function (Request $request) {
     $event->description = $request->description ?? '';
     $event->save();
 
-    return response("Successfully created event!\n", 201);
+    return response($event->toJson(), 201);
 });
 
 /** Delete an existing calendar event. */
 Route::delete('/events/{id}', function ($id) {
-    // TODO
+    $event = App\Models\Event::findOrFail($id);
+    $event->delete();
+    return response("Successfully deleted event $id!\n", 200);
 });
