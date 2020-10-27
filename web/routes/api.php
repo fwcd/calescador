@@ -33,7 +33,7 @@ Route::get('/users/{id}', function ($id) {
 
 /** Fetches a user by Discord user ID. */
 Route::get('/users/discord/{id}', function ($id) {
-    $user = App\Models\User::where('discord_user_id', '==', $id)->firstOrFail();
+    $user = App\Models\User::where('discord_user_id', '=', $id)->firstOrFail();
     return response()->json($user);
 });
 
@@ -85,7 +85,7 @@ Route::get('/events/{id}', function ($id) {
 
 /** Fetch events by Discord message id. */
 Route::get('/events/discord/{id}', function ($id) {
-    $event = App\Models\Event::where('discord_message_id', '==', $id)->firstOrFail();
+    $event = App\Models\Event::where('discord_message_id', '=', $id)->firstOrFail();
     return response()->json($event);
 });
 

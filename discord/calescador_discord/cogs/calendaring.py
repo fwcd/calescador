@@ -20,7 +20,7 @@ class Calendaring(commands.Cog):
         self.api = api
         self.web_url = web_url
 
-    def parse_event(self, raw):
+    def parse_event(self, raw: str, discord_message_id):
         """Parses an event from the syntax `[day/date], [time(s)], [name]`."""
 
         split = [s.strip() for s in raw.split(',')]
@@ -44,12 +44,13 @@ class Calendaring(commands.Cog):
         return Event(
             name=name.capitalize(),
             start_dt=start_dt,
-            end_dt=end_dt
+            end_dt=end_dt,
+            discord_message_id=discord_message_id
         )
 
     @commands.command(brief='Creates a new event')
     async def create(self, ctx, *args):
-        event = self.parse_event(' '.join(args))
+        event = self.parse_event(' '.join(args), ctx.message.id)
         event = await self.api.create_event(event)
 
         embed = Embed(
