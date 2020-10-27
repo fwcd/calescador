@@ -25,6 +25,40 @@ Route::get('/users', function (Request $request) {
     return response()->json($users);
 });
 
+/** Fetches a user by ID. */
+Route::get('/users/{id}', function ($id) {
+    $user = App\Models\User::findOrFail($id);
+    return response()->json($user);
+});
+
+/** Creates a new user. */
+Route::post('/users', function (Request $request) {
+    $validator = Validator::make($request->all(), [
+        'name' => 'required|max:255',
+        'password' => 'required'
+    ]);
+
+    if ($validator->fails()) {
+        $errorMessages = $validator->messages()->get('*');
+        $errorMessage = Arr::first(Arr::flatten($errorMessages));
+        return response()->json($errorMessage, 400);
+    }
+
+    $user = new App\Models\User;
+    $user->name = $request->name;
+    $user->password = Hash::make($request->password);
+    $user->discord_user_id = $request->discord_user_id;
+
+    return response()->json($user, 201);
+});
+
+/** Deletes a user. */
+Route::delete('/users/{id}', function ($id) {
+    $user = App\Models\User::findOrFail($id);
+    $user->delete();
+    return response()->json("Successfully deleted user $id!", 200);
+});
+
 /** Fetch all calendar events. */
 Route::get('/events', function () {
     $events = App\Models\Event::orderBy('start_dt', 'asc')->get();
