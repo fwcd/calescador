@@ -36,7 +36,9 @@ Route::post('/events', function (Request $request) {
     ]);
 
     if ($validator->fails()) {
-        return response('Invalid parameters!', 400);
+        $errorMessages = $validator->messages()->get('*');
+        $errorMessage = Arr::first(Arr::flatten($errorMessages));
+        return response("$errorMessage\n", 400);
     }
 
     // TODO
