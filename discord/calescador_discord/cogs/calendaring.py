@@ -51,15 +51,16 @@ class Calendaring(commands.Cog):
     @commands.command(brief='Creates a new event')
     async def create(self, ctx, *args):
         event = self.parse_event(' '.join(args), ctx.message.id)
-        event = await self.api.create_event(event)
 
         embed = Embed(
             title=f':calendar_spiral: New Event: {event.name}',
             description=format_datetime_span(event.start_dt, event.end_dt)
         )
         embed.set_footer(text='React with the number of people you want to bring!')
+        sent = await ctx.send(embed=embed)
 
-        await ctx.send(embed=embed)
+        event.discord_message_id = sent.id
+        await self.api.create_event(event)
 
     @create.error
     async def create_error(self, ctx, error):
