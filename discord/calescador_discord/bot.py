@@ -1,7 +1,7 @@
 from discord import Activity, ActivityType
 from discord.ext.commands import Bot
 
-from calescador_discord.api.api_client import *
+from calescador_discord.api_client import *
 from calescador_discord.cogs.calendaring import *
 from calescador_discord.cogs.general import *
 
