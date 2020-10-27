@@ -2,6 +2,8 @@ import json
 from datetime import datetime, timedelta
 from typing import Optional
 
+from calescador_discord.utils.general import filter_not_none
+
 class Event:
     def __init__(
         self,
@@ -39,12 +41,12 @@ class Event:
         )
 
     def to_dict(self):
-        return {
+        return filter_not_none({
             'id': str(self.id) if self.id else None,
             'name': self.name,
             'start_dt': self.start_dt.isoformat(),
             'end_dt': self.end_dt.isoformat(),
             'location': self.location,
             'description': self.description,
-            'discord_message_id': str(self.discord_message_id) if self.discord_message_id else self.discord_message_id
-        }
+            'discord_message_id': str(self.discord_message_id) if self.discord_message_id else None
+        })

@@ -24,25 +24,25 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 /** Fetch all calendar events. */
 Route::get('/events', function () {
     $events = App\Models\Event::orderBy('start_dt', 'asc')->get();
-    return $events->toJson();
+    return response()->json($events);
 });
 
 /** Fetch upcoming calendar events. */
 Route::get('/events/upcoming', function () {
     $events = App\Models\Event::orderBy('start_dt', 'asc')->where('start_dt', '>=', Carbon::now())->get();
-    return $events->toJson();
+    return response()->json($events);
 });
 
 /** Fetch an event by id. */
 Route::get('/events/{id}', function ($id) {
     $event = App\Models\Event::findOrFail($id);
-    return $event->toJson();
+    return response()->json($event);
 });
 
 /** Fetch events by Discord message id. */
 Route::get('/events/discord/{id}', function ($id) {
     $event = App\Models\Event::where('discord_message_id', '==', $id)->firstOrFail();
-    return $event->toJson();
+    return response()->json($event);
 });
 
 /** Create a new calendar event. */
@@ -59,7 +59,7 @@ Route::post('/events', function (Request $request) {
     if ($validator->fails()) {
         $errorMessages = $validator->messages()->get('*');
         $errorMessage = Arr::first(Arr::flatten($errorMessages));
-        return response("$errorMessage\n", 400);
+        return response()->json($errorMessage, 400);
     }
 
     $event = new App\Models\Event;
@@ -71,12 +71,12 @@ Route::post('/events', function (Request $request) {
     $event->discord_message_id = $request->discord_message_id;
     $event->save();
 
-    return response($event->toJson(), 201);
+    return response()->json($event, 201);
 });
 
 /** Delete an existing calendar event. */
 Route::delete('/events/{id}', function ($id) {
     $event = App\Models\Event::findOrFail($id);
     $event->delete();
-    return response("Successfully deleted event $id!\n", 200);
+    return response()->json("Successfully deleted event $id!", 200);
 });

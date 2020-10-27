@@ -47,7 +47,7 @@ class Calendaring(commands.Cog):
     @commands.command(brief='Creates a new event')
     async def create(self, ctx, *args):
         event = self.parse_event(' '.join(args))
-        event = self.api.create_event(event)
+        event = await self.api.create_event(event)
 
         embed = Embed(
             title=f':calendar_spiral: New Event: {event.name}',
@@ -88,12 +88,12 @@ class Calendaring(commands.Cog):
 
     @commands.command(brief='Fetches upcoming events in the calendar')
     async def upcoming(self, ctx):
-        events = self.api.upcoming_events()
+        events = await self.api.upcoming_events()
         await ctx.send(embed=self.events_embed(events))
 
     @commands.command(brief='Fetches all events in the calendar')
     async def events(self, ctx):
-        events = self.api.events()
+        events = await self.api.events()
         await ctx.send(embed=self.events_embed(events))
 
     @events.error

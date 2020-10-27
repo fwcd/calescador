@@ -1,2 +1,2 @@
 discord.py>=1.5,<1.6
-requests>=2.24,<2.25
+aiohttp
