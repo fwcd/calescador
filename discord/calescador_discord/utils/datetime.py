@@ -68,4 +68,4 @@ def format_datetime_span(dt1: datetime, dt2: datetime) -> str:
     if dt1.date() == dt2.date():
         return f'{format_date(dt1.date())}, {format_time(dt1.time())} - {format_time(dt2.time())}'
     else:
-        return f'{format_datetime(dt1)} - {format_datetime(dt2)}'
+        return f'{format_datetime(dt1)}\n{format_datetime(dt2)}'

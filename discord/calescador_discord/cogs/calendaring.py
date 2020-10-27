@@ -28,6 +28,9 @@ class Calendaring(commands.Cog):
         times = [parse_time(s.strip()) for s in split[1].split('-')]
         name = split[2]
 
+        if name == "":
+            raise ValueError('Name should not be empty!')
+
         if len(times) not in [1, 2]:
             raise ValueError('Please provide a start (and optionally an end) time!')
 
@@ -35,7 +38,7 @@ class Calendaring(commands.Cog):
         end_dt = datetime.combine(day, times[1]) if len(times) > 1 else start_dt + timedelta(hours=2)
 
         return Event(
-            name=name,
+            name=name.capitalize(),
             start_dt=start_dt,
             end_dt=end_dt
         )
@@ -45,10 +48,13 @@ class Calendaring(commands.Cog):
         event = self.parse_event(' '.join(args))
         event = self.api.create_event(event)
 
-        await ctx.send(embed=Embed(
-            title=f':calendar_spiral: New Event `{event.name}`',
+        embed = Embed(
+            title=f':calendar_spiral: New Event: {event.name}',
             description=format_datetime_span(event.start_dt, event.end_dt)
-        ))
+        )
+        embed.set_footer(text='React with the number of people you want to bring!')
+
+        await ctx.send(embed=embed)
 
     @create.error
     async def create_error(self, ctx, error):
