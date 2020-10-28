@@ -17,6 +17,7 @@ class CreateEventUserTable extends Migration
         Schema::create('event_user', function (Blueprint $table) {
             $table->foreignId('user_id')->constrained();
             $table->foreignId('event_id')->constrained();
+            $table->primary(['user_id', 'event_id']);
             $table->integer('count');
         });
     }
