@@ -165,6 +165,6 @@ Route::get('/attendances/{user_id}', function ($user_id, Request $request) {
 
 /** Deletes an attendance. */
 Route::delete('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
-    App\Models\User::findOrFail($user_id)->users()->detach($event_id);
+    App\Models\User::findOrFail($user_id)->events()->detach($event_id);
     return response()->json("Successfully deleted attendance of $user_id to $event_id!", 200);
 });
