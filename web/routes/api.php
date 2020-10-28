@@ -21,7 +21,8 @@ function validationError($validator) {
 }
 
 // TODO: Require authentication on all routes
-// TODO: Factor out controllers
+// TODO: Factor out controllers, perhaps even resource controllers?
+//       See https://laravel.com/docs/8.x/controllers#resource-controllers
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 
