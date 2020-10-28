@@ -163,6 +163,12 @@ Route::get('/attendances/{user_id}', function ($user_id, Request $request) {
     return response()->json($attendances, 200);
 });
 
+/** Fetches a single attendance. */
+Route::get('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
+    $attendance = App\Models\User::findOrFail($user_id)->events()->findOrFail($event_id)->pivot;
+    return response()->json($attendance, 200);
+});
+
 /** Deletes an attendance. */
 Route::delete('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
     App\Models\User::findOrFail($user_id)->events()->detach($event_id);
