@@ -65,3 +65,13 @@ class APIClient:
 
         response = await self.request('GET', f'/users/discord/{discord_user_id}')
         return User.from_dict(response)
+
+    async def attend(self, user_id, event_id, count):
+        """Adds the attendance of the given user to the given id with the given number of people."""
+
+        await self.request('PUT', f'/attendances/{user_id}/{event_id}')
+
+    async def unattend(self, user_id, event_id):
+        """Removes the attendance of the given user to the given id."""
+
+        await self.request('DELETE', f'/attendances/{user_id}/{event_id}')
