@@ -108,8 +108,9 @@ class Calendaring(commands.Cog):
         print(f'Successfully added attendance of {discord_user.name} with {count} people to event {event_id}!')
 
     async def remove_attendance(self, discord_user, event_id):
-        # TODO
-        pass
+        user = await self.api.user_by_discord_user_id(discord_user.id)
+        await self.api.unattend(user.id, event_id)
+        print(f'Successfully removed attendance of {discord_user.name} to event {event_id}!')
 
     async def extract_reaction_payload(self, payload):
         count = emoji_to_number(payload.emoji.name)
@@ -119,12 +120,18 @@ class Calendaring(commands.Cog):
             return None
 
         channel = self.bot.get_channel(payload.channel_id)
-        user = self.bot.get_user(payload.user_id)
+        user = await self.bot.fetch_user(payload.user_id)
         message = await channel.fetch_message(payload.message_id)
         my_id = self.bot.user.id
 
-        if channel == None or user == None or message == None:
-            print("Warning: No channel/user/message found after reaction!")
+        if channel == None:
+            print("Warning: No channel found from reaction payload!")
+            return None
+        if user == None:
+            print("Warning: No user found from reaction payload!")
+            return None
+        if message == None:
+            print("Warning: No message found from reaction payload!")
             return None
 
         if user.id == my_id or message.author.id != my_id:

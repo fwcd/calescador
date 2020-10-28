@@ -16,7 +16,7 @@ class APIClient:
                 if (r.status // 100) == 2:
                     return await r.json()
                 else:
-                    raise IOError(f'Got HTTP {r.status} from API: {await r.text()}')
+                    raise IOError(f'Got HTTP {r.status} from API: {(await r.text())[:32]}')
 
     async def create_event(self, event: Event) -> Event:
         """Creates a new calendar event on the server."""
