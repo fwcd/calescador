@@ -104,13 +104,32 @@ class Calendaring(commands.Cog):
                 'Have fun! :D'
             ]))
 
-        await self.api.attend(user.id, event_id, count)
-        print(f'Successfully added attendance of {discord_user.name} with {count} people to event {event_id}!')
+        try:
+            # If a previous attendance exists, replace it
+            current_attendance = await self.api.attendance(user.id, event_id)
+            current_count = current_attendance.count
+            await self.api.unattend(user.id, event_id)
+        except:
+            current_count = 0
 
-    async def remove_attendance(self, discord_user, event_id):
+        new_count = current_count + count
+        await self.api.attend(user.id, event_id, new_count)
+
+        print(f"Successfully {'added' if current_count == 0 else 'updated'} attendance of {discord_user.name} with {new_count} people to event {event_id}!")
+
+    async def remove_attendance(self, discord_user, event_id, count):
         user = await self.api.user_by_discord_user_id(discord_user.id)
+        current_attendance = await self.api.attendance(user.id, event_id)
+        current_count = current_attendance.count
+
+        new_count = current_count - count
         await self.api.unattend(user.id, event_id)
-        print(f'Successfully removed attendance of {discord_user.name} to event {event_id}!')
+
+        if new_count <= 0:
+            print(f'Successfully removed attendance of {discord_user.name} to event {event_id}!')
+        else:
+            await self.api.attend(user.id, event_id, new_count)
+            print(f'Successfully updated attendance of {discord_user.name} with {new_count} people to event {event_id}!')
 
     async def extract_reaction_payload(self, payload):
         count = emoji_to_number(payload.emoji.name)
@@ -156,7 +175,7 @@ class Calendaring(commands.Cog):
         if extracted != None:
             (count, channel, user, message) = extracted
             event = await self.api.event_by_discord_message_id(message.id)
-            await self.remove_attendance(user, event.id)
+            await self.remove_attendance(user, event.id, count)
 
     def events_embed(self, events: List[Event]) -> Embed:
         embed = Embed(title=':calendar_spiral: All Events')

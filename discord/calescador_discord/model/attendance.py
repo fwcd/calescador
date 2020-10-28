@@ -16,14 +16,14 @@ class Attendance:
     @staticmethod
     def from_dict(d: dict):
         return Attendance(
-            id=d['id'],
             user_id=d['user_id'],
-            event_id=d['event_id']
+            event_id=d['event_id'],
+            count=d['count']
         )
 
     def to_dict(self):
         return filter_not_none({
-            'id': self.id,
             'user_id': self.user_id,
-            'event_id': self.event_id
+            'event_id': self.event_id,
+            'count': self.count
         })
