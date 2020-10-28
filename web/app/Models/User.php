@@ -35,6 +35,6 @@ class User extends Authenticatable
      */
     public function events()
     {
-        return $this->belongsToMany('App\Models\Event');
+        return $this->belongsToMany('App\Models\Event')->withPivot('count');
     }
 }

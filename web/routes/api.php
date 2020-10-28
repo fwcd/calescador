@@ -15,6 +15,11 @@ use Carbon\Carbon;
 |
 */
 
+function validationError($validator) {
+    $errorMessages = $validator->messages()->get('*');
+    return Arr::first(Arr::flatten($errorMessages));
+}
+
 // TODO: Require authentication on all routes
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
@@ -45,9 +50,7 @@ Route::post('/users', function (Request $request) {
     ]);
 
     if ($validator->fails()) {
-        $errorMessages = $validator->messages()->get('*');
-        $errorMessage = Arr::first(Arr::flatten($errorMessages));
-        return response()->json($errorMessage, 400);
+        return response()->json(validationError($validator), 400);
     }
 
     $user = new App\Models\User;
@@ -102,9 +105,7 @@ Route::post('/events', function (Request $request) {
     ]);
 
     if ($validator->fails()) {
-        $errorMessages = $validator->messages()->get('*');
-        $errorMessage = Arr::first(Arr::flatten($errorMessages));
-        return response()->json($errorMessage, 400);
+        return response()->json(validationError($validator), 400);
     }
 
     $event = new App\Models\Event;
@@ -124,4 +125,30 @@ Route::delete('/events/{id}', function ($id) {
     $event = App\Models\Event::findOrFail($id);
     $event->delete();
     return response()->json("Successfully deleted event $id!", 200);
+});
+
+/** Creates a new attendance. */
+Route::put('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
+    $validator = Validator::make($request->all(), [
+        'count' => 'required|max:127'
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(validationError($validator), 400);
+    }
+
+    App\Models\User::findOrFail($user_id)->events()->attach($event_id, ['count' => $request->count]);
+    return response()->json("Successfully added attendance of $user_id to $event_id!", 200);
+});
+
+/** Fetches all events attended by a user. */
+Route::get('/attendances/{user_id}', function ($user_id, Request $request) {
+    $events = App\Models\User::findOrFail($user_id)->events();
+    return response()->json($events, 200);
+});
+
+/** Deletes an attendance. */
+Route::delete('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
+    App\Models\User::findOrFail($user_id)->users()->detach($event_id);
+    return response()->json("Successfully deleted attendance of $user_id to $event_id!", 200);
 });

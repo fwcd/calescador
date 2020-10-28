@@ -133,16 +133,16 @@ class Calendaring(commands.Cog):
 
     @commands.Cog.listener()
     async def on_raw_reaction_add(self, payload):
-        extracted = self.extract_reaction_payload(payload)
+        extracted = await self.extract_reaction_payload(payload)
 
         if extracted != None:
             (count, channel, user, message) = extracted
             event = await self.api.event_by_discord_message_id(message.id)
             await self.add_attendance(user, event.id, count)
 
-    @commands.Cog.listener
+    @commands.Cog.listener()
     async def on_raw_reaction_remove(self, payload):
-        extracted = self.extract_reaction_payload(payload)
+        extracted = await self.extract_reaction_payload(payload)
 
         if extracted != None:
             (count, channel, user, message) = extracted

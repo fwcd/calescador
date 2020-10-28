@@ -13,10 +13,8 @@ class CreateEventUserTable extends Migration
      */
     public function up()
     {
-        # Represents an attendance
+        # Represents an attendance relation
         Schema::create('event_user', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('event_id')->constrained();
             $table->integer('count');
