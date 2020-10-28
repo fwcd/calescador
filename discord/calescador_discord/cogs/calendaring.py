@@ -77,6 +77,8 @@ class Calendaring(commands.Cog):
         ]), error))
         raise error
 
+    # TODO: Add option to reset user accounts on the server without deleting them?
+
     async def add_attendance(self, discord_user, event_id, count):
         """Adds a user with the given attendance count to the event, creating the necessary user if it not already exists."""
 
@@ -84,26 +86,26 @@ class Calendaring(commands.Cog):
             user = await self.api.user_by_discord_user_id(discord_user.id)
         except:
             # User seems to be unregistered, create him
-            user = User(
+            new_user = User(
                 name=f'{discord_user.name}#{discord_user.discriminator}',
                 password=passgen(), # plaintext
                 discord_user_id=discord_user.id
             )
 
-            await self.api.create_user(user)
+            user = await self.api.create_user(new_user)
             await discord_user.send('\n'.join([
                 'Hey! Since you recently reacted on an event, I thought it might be a good idea to make you an account, so here goes.',
                 '```',
-                f'Username: {user.name}',
-                f'Password: {user.password}',
+                f'Username: {new_user.name}',
+                f'Password: {new_user.password}',
                 '```',
                 f'You can use these credentials to log in on <{self.web_url}>! Just a final note: Please make sure to save the password, I cannot show it to you again.',
                 '',
                 'Have fun! :D'
             ]))
 
-        # TODO: Option to reset user accounts on the server without deleting them?
-        # TODO: Actually add the attendee
+        await self.api.attend(user.id, event_id, count)
+        print(f'Successfully added attendance of {discord_user.name} with {count} people to event {event_id}!')
 
     async def remove_attendance(self, discord_user, event_id):
         # TODO
