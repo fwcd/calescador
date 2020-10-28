@@ -1,6 +1,7 @@
 import aiohttp
 from typing import List
 
+from calescador_discord.model.attendance import Attendance
 from calescador_discord.model.event import Event
 from calescador_discord.model.user import User
 
@@ -75,3 +76,9 @@ class APIClient:
         """Removes the attendance of the given user to the given id."""
 
         await self.request('DELETE', f'/attendances/{user_id}/{event_id}')
+
+    async def attendance(self, user_id, event_id) -> Attendance:
+        """Fetches a single attendance."""
+
+        response = await self.request('GET', f'/attendances/{user_id}/{event_id}')
+        return Attendance.from_dict(response)
