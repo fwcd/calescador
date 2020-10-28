@@ -21,6 +21,7 @@ function validationError($validator) {
 }
 
 // TODO: Require authentication on all routes
+// TODO: Factor out controllers
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 
@@ -141,10 +142,24 @@ Route::put('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, R
     return response()->json("Successfully added attendance of $user_id to $event_id!", 200);
 });
 
-/** Fetches all events attended by a user. */
+/** Fetches attendances. */
+Route::get('/attendances', function (Request $request) {
+    $attendances = [];
+    foreach (App\Models\User::with('events')->get() as $user) {
+        foreach ($user->events as $event) {
+            array_push($attendances, $event->pivot);
+        }
+    }
+    return response()->json($attendances, 200);
+});
+
+/** Fetches attendances of a user. */
 Route::get('/attendances/{user_id}', function ($user_id, Request $request) {
-    $events = App\Models\User::findOrFail($user_id)->events();
-    return response()->json($events, 200);
+    $attendances = [];
+    foreach (App\Models\User::findOrFail($user_id)->events as $event) {
+        array_push($attendances, $event->pivot);
+    }
+    return response()->json($attendances, 200);
 });
 
 /** Deletes an attendance. */
