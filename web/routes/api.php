@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -55,47 +56,16 @@ Route::post('/events', [EventController::class, 'create']);
 Route::delete('/events/{id}', [EventController::class, 'delete']);
 
 /** Creates a new attendance. */
-Route::put('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
-    $validator = Validator::make($request->all(), [
-        'count' => 'required|max:127'
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(validationError($validator), 400);
-    }
-
-    \App\Models\User::findOrFail($user_id)->events()->attach($event_id, ['count' => $request->count]);
-    return response()->json("Successfully added attendance of $user_id to $event_id!", 200);
-});
+Route::put('/attendances/{user_id}/{event_id}', [AttendanceController::class, 'create']);
 
 /** Fetches attendances. */
-Route::get('/attendances', function (Request $request) {
-    $attendances = [];
-    foreach (App\Models\User::with('events')->get() as $user) {
-        foreach ($user->events as $event) {
-            array_push($attendances, $event->pivot);
-        }
-    }
-    return response()->json($attendances, 200);
-});
+Route::get('/attendances', [AttendanceController::class, 'all']);
 
 /** Fetches attendances of a user. */
-Route::get('/attendances/{user_id}', function ($user_id, Request $request) {
-    $attendances = [];
-    foreach (App\Models\User::findOrFail($user_id)->events as $event) {
-        array_push($attendances, $event->pivot);
-    }
-    return response()->json($attendances, 200);
-});
+Route::get('/attendances/{user_id}', [AttendanceController::class, 'findByUser']);
 
 /** Fetches a single attendance. */
-Route::get('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
-    $attendance = \App\Models\User::findOrFail($user_id)->events()->findOrFail($event_id)->pivot;
-    return response()->json($attendance, 200);
-});
+Route::get('/attendances/{user_id}/{event_id}', [AttendanceController::class, 'find']);
 
 /** Deletes an attendance. */
-Route::delete('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
-    \App\Models\User::findOrFail($user_id)->events()->detach($event_id);
-    return response()->json("Successfully deleted attendance of $user_id to $event_id!", 200);
-});
+Route::delete('/attendances/{user_id}/{event_id}', [AttendanceController::class, 'delete']);
