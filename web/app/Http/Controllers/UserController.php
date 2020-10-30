@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ValidationHelper;
 use Illuminate\Http\Request;
+use Validator;
 
 class UserController extends Controller
 {
     // TODO: Auth in constructor
 
     /** Fetches a list of all users. */
-    public function all(Request $request)
+    public function all()
     {
         $users = \App\Models\User::get();
         return response()->json($users);

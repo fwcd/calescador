@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,62 +37,22 @@ Route::post('/users', [UserController::class, 'create']);
 Route::delete('/users/{id}', [UserController::class, 'delete']);
 
 /** Fetch all calendar events. */
-Route::get('/events', function () {
-    $events = App\Models\Event::orderBy('start_dt', 'asc')->get();
-    return response()->json($events);
-});
+Route::get('/events', [EventController::class, 'all']);
 
 /** Fetch upcoming calendar events. */
-Route::get('/events/upcoming', function () {
-    $events = App\Models\Event::orderBy('start_dt', 'asc')->where('start_dt', '>=', Carbon::now())->get();
-    return response()->json($events);
-});
+Route::get('/events/upcoming', [EventController::class, 'upcoming']);
 
 /** Fetch an event by id. */
-Route::get('/events/{id}', function ($id) {
-    $event = App\Models\Event::findOrFail($id);
-    return response()->json($event);
-});
+Route::get('/events/{id}', [EventController::class, 'find']);
 
 /** Fetch events by Discord message id. */
-Route::get('/events/discord/{id}', function ($id) {
-    $event = App\Models\Event::where('discord_message_id', '=', $id)->firstOrFail();
-    return response()->json($event);
-});
+Route::get('/events/discord/{id}', [EventController::class, 'findByDiscord']);
 
 /** Create a new calendar event. */
-Route::post('/events', function (Request $request) {
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|max:255',
-        'start_dt' => 'required|date',
-        'end_dt' => 'required|date|after:start_dt',
-        'location' => 'max:255',
-        'description' => 'max:2047',
-        'discord_message_id' => 'max:127'
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(validationError($validator), 400);
-    }
-
-    $event = new App\Models\Event;
-    $event->name = $request->name;
-    $event->start_dt = $request->start_dt;
-    $event->end_dt = $request->end_dt;
-    $event->location = $request->location ?? '';
-    $event->description = $request->description ?? '';
-    $event->discord_message_id = $request->discord_message_id;
-    $event->save();
-
-    return response()->json($event, 201);
-});
+Route::post('/events', [EventController::class, 'create']);
 
 /** Delete an existing calendar event. */
-Route::delete('/events/{id}', function ($id) {
-    $event = App\Models\Event::findOrFail($id);
-    $event->delete();
-    return response()->json("Successfully deleted event $id!", 200);
-});
+Route::delete('/events/{id}', [EventController::class, 'delete']);
 
 /** Creates a new attendance. */
 Route::put('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
@@ -103,7 +64,7 @@ Route::put('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, R
         return response()->json(validationError($validator), 400);
     }
 
-    App\Models\User::findOrFail($user_id)->events()->attach($event_id, ['count' => $request->count]);
+    \App\Models\User::findOrFail($user_id)->events()->attach($event_id, ['count' => $request->count]);
     return response()->json("Successfully added attendance of $user_id to $event_id!", 200);
 });
 
@@ -129,12 +90,12 @@ Route::get('/attendances/{user_id}', function ($user_id, Request $request) {
 
 /** Fetches a single attendance. */
 Route::get('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
-    $attendance = App\Models\User::findOrFail($user_id)->events()->findOrFail($event_id)->pivot;
+    $attendance = \App\Models\User::findOrFail($user_id)->events()->findOrFail($event_id)->pivot;
     return response()->json($attendance, 200);
 });
 
 /** Deletes an attendance. */
 Route::delete('/attendances/{user_id}/{event_id}', function ($user_id, $event_id, Request $request) {
-    App\Models\User::findOrFail($user_id)->events()->detach($event_id);
+    \App\Models\User::findOrFail($user_id)->events()->detach($event_id);
     return response()->json("Successfully deleted attendance of $user_id to $event_id!", 200);
 });
