@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Carbon\Carbon;
@@ -15,61 +16,24 @@ use Carbon\Carbon;
 |
 */
 
-function validationError($validator) {
-    $errorMessages = $validator->messages()->get('*');
-    return Arr::first(Arr::flatten($errorMessages));
-}
-
 // TODO: Require authentication on all routes
-// TODO: Factor out controllers, perhaps even resource controllers?
-//       See https://laravel.com/docs/8.x/controllers#resource-controllers
 
 // Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 /** Fetches a list of all users. */
-Route::get('/users', function (Request $request) {
-    $users = App\Models\User::get();
-    return response()->json($users);
-});
+Route::get('/users', [UserController::class, 'all']);
 
 /** Fetches a user by ID. */
-Route::get('/users/{id}', function ($id) {
-    $user = App\Models\User::findOrFail($id);
-    return response()->json($user);
-});
+Route::get('/users/{id}', [UserController::class, 'find']);
 
 /** Fetches a user by Discord user ID. */
-Route::get('/users/discord/{id}', function ($id) {
-    $user = App\Models\User::where('discord_user_id', '=', $id)->firstOrFail();
-    return response()->json($user);
-});
+Route::get('/users/discord/{id}', [UserController::class, 'findByDiscord']);
 
 /** Creates a new user. */
-Route::post('/users', function (Request $request) {
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|max:255',
-        'password' => 'required'
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json(validationError($validator), 400);
-    }
-
-    $user = new App\Models\User;
-    $user->name = $request->name;
-    $user->password = Hash::make($request->password);
-    $user->discord_user_id = $request->discord_user_id;
-    $user->save();
-
-    return response()->json($user, 201);
-});
+Route::post('/users', [UserController::class, 'create']);
 
 /** Deletes a user. */
-Route::delete('/users/{id}', function ($id) {
-    $user = App\Models\User::findOrFail($id);
-    $user->delete();
-    return response()->json("Successfully deleted user $id!", 200);
-});
+Route::delete('/users/{id}', [UserController::class, 'delete']);
 
 /** Fetch all calendar events. */
 Route::get('/events', function () {
