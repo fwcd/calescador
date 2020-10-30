@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\ValidationHelper;
 use Illuminate\Http\Request;
+use Hash;
 use Validator;
 
 class UserController extends Controller
