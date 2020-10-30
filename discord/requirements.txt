@@ -2,3 +2,4 @@ discord.py>=1.5,<1.6
 aiohttp
 python-dateutil>=2.8,<2.9
 passgen>=1.1,<1.2
+beautifulsoup4

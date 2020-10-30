@@ -1,4 +1,5 @@
 import aiohttp
+from bs4 import BeautifulSoup
 from typing import List
 
 from calescador_discord.model.attendance import Attendance
@@ -8,8 +9,9 @@ from calescador_discord.model.user import User
 class APIClient:
     """A wrapper around the Calescador web API."""
 
-    def __init__(self, url):
+    def __init__(self, url, show_server_stacktraces=False):
         self.url = url
+        self.show_server_stacktraces = show_server_stacktraces
 
     async def request(self, method: str, route: str, *args, **kwargs):
         async with aiohttp.ClientSession() as session:
@@ -17,7 +19,18 @@ class APIClient:
                 if (r.status // 100) == 2:
                     return await r.json()
                 else:
-                    raise IOError(f'Got HTTP {r.status} from API: {(await r.text())[:32]}')
+                    text = await r.text()
+                    try:
+                        # Use exception message from the error website
+                        message = BeautifulSoup(text).select_one('noscript > pre')
+                        text = message.get_text()
+
+                        if not self.show_server_stacktraces:
+                            text = text.split('\n')[0]
+                    except:
+                        # ...otherwise just truncate the output
+                        text = text[:32].replace('\n', ' ')
+                    raise IOError(f'Got HTTP {r.status} from API: {text}')
 
     async def create_event(self, event: Event) -> Event:
         """Creates a new calendar event on the server."""
