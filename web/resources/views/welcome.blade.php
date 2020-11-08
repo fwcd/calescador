@@ -35,7 +35,12 @@
             @endif
 
             <div class="splash">
-                <h1>Calescador</h1>
+                <div>
+                    <img src="{{ asset('images/icon.svg') }}">
+                </div>
+                <div>
+                    <h1>Calescador</h1>
+                </div>
             </div>
         </div>
     </body>
