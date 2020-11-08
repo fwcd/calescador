@@ -1,3 +1,8 @@
+$spacing: 1.5em;
+$logo-width: 10em;
+$content-width: $logo-width * 1.5;
+$breakpoint-width: $logo-width * 3.5;
+
 html, body {
     height: 100%;
 }
@@ -16,15 +21,29 @@ body {
 }
 
 .padded-column {
-    margin: 0 1.5em;
+    margin: 0 $spacing;
+}
+
+@media screen and (max-width: $breakpoint-width) {
+    body {
+        align-items: baseline;
+    }
+
+    .splash {
+        flex-direction: column;
+    }
+
+    .padded-column {
+        margin: $spacing 0;
+    }
 }
 
 .content {
-    width: 15em;
+    width: $content-width;
 }
 
 .logo {
-    width: 10em;
+    width: $logo-width;
 }
 
 .link-bar {

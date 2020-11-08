@@ -20,6 +20,20 @@ body {
   margin: 0 1.5em;
 }
 
+@media screen and (max-width: 35em) {
+  body {
+    align-items: baseline;
+  }
+
+  .splash {
+    flex-direction: column;
+  }
+
+  .padded-column {
+    margin: 1.5em 0;
+  }
+}
+
 .content {
   width: 15em;
 }
