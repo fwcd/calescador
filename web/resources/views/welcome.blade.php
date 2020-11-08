@@ -20,26 +20,25 @@
     </head>
     <body class="antialiased">
         <div class="link-bar">
-            @if (Route::has('login'))
-                <div>
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}">Register</a>
-                        @endif
-                    @endif
-                </div>
-            @endif
-
             <div class="splash">
-                <div>
-                    <img src="{{ asset('images/icon.svg') }}">
+                <div class="padded-column">
+                    <img src="{{ asset('images/icon.svg') }}" class="logo">
                 </div>
-                <div>
+                <div class="padded-column content">
+                    <div class="link-bar">
+                        @auth
+                            <a href="{{ url('/home') }}">Home</a>
+                        @else
+                            <a href="{{ route('login') }}">Login</a>
+
+                            @if (Route::has('register'))
+                                <a href="{{ route('register') }}">Register</a>
+                            @endif
+                        @endif
+                    </div>
+
                     <h1>Calescador</h1>
+                    <p>A collaborative calendaring and scheduling system.</p>
                 </div>
             </div>
         </div>

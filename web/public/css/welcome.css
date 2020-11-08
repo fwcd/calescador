@@ -9,11 +9,47 @@ body {
   justify-content: center;
 }
 
+.splash {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.padded-column {
+  margin: 0 1.5em;
+}
+
+.content {
+  width: 15em;
+}
+
+.logo {
+  width: 10em;
+}
+
 .link-bar {
   text-align: center;
 }
 
-.splash {
-  margin: 0 auto;
+a {
+  color: #707070;
+}
+
+a:hover {
+  color: #505050;
+}
+
+a:active {
+  color: black;
+}
+
+h1 {
+  font-size: 2em;
+  margin: 0.5em 0;
+}
+
+h2 {
+  font-size: 1em;
 }
 
