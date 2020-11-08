@@ -17284,7 +17284,14 @@ __webpack_require__.r(__webpack_exports__);
     return {
       calendarOptions: {
         plugins: [_fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__["default"], _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_2__["default"]],
-        interactionView: 'dayGridMonth'
+        interactionView: 'dayGridMonth',
+        events: [{
+          title: 'Test',
+          date: '2020-11-10'
+        }, {
+          title: 'Test',
+          date: '2020-11-11'
+        }]
       }
     };
   }

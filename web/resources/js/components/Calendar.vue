@@ -17,7 +17,11 @@
             return {
                 calendarOptions: {
                     plugins: [dayGridPlugin, interactionPlugin],
-                    interactionView: 'dayGridMonth'
+                    interactionView: 'dayGridMonth',
+                    events: [
+                        { title: 'Test', date: '2020-11-10' },
+                        { title: 'Test', date: '2020-11-11' }
+                    ]
                 }
             };
         }
