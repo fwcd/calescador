@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    <calendar />
+                    <calendar events='@json($events)' />
                 </div>
             </div>
         </div>

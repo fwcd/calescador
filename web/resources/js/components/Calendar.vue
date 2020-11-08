@@ -10,18 +10,20 @@
     import interactionPlugin from '@fullcalendar/interaction';
 
     export default {
+        props: ['events'],
         components: {
             FullCalendar // to make the FullCalendar tag available
         },
         data() {
+            const events = JSON.parse(this.events);
             return {
                 calendarOptions: {
                     plugins: [dayGridPlugin, interactionPlugin],
                     interactionView: 'dayGridMonth',
-                    events: [
-                        { title: 'Test', date: '2020-11-10' },
-                        { title: 'Test', date: '2020-11-11' }
-                    ]
+                    events: events.map(e => ({
+                        title: e.name,
+                        date: e.start_dt
+                    }))
                 }
             };
         }

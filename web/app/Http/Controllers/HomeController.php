@@ -23,6 +23,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        // TODO: Filter only events that the (logged in) user attends to?
+        return view('home', ['events' => \App\Models\Event::get()]);
     }
 }

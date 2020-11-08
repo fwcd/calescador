@@ -17276,22 +17276,23 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['events'],
   components: {
     FullCalendar: _fullcalendar_vue__WEBPACK_IMPORTED_MODULE_0__["default"] // to make the FullCalendar tag available
 
   },
   data: function data() {
+    var events = JSON.parse(this.events);
     return {
       calendarOptions: {
         plugins: [_fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__["default"], _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_2__["default"]],
         interactionView: 'dayGridMonth',
-        events: [{
-          title: 'Test',
-          date: '2020-11-10'
-        }, {
-          title: 'Test',
-          date: '2020-11-11'
-        }]
+        events: events.map(function (e) {
+          return {
+            title: e.name,
+            date: e.start_dt
+          };
+        })
       }
     };
   }
