@@ -75,7 +75,6 @@ class Calendaring(commands.Cog):
             '`monday, 19:00, Some event`',
             '`28.10.2020, 16:00-17:00, Another event`'
         ]), error))
-        raise error
 
     # TODO: Add option to reset user accounts on the server without deleting them?
 
@@ -199,4 +198,3 @@ class Calendaring(commands.Cog):
     @events.error
     async def events_error(self, ctx, error):
         await ctx.send(embed=error_embed('Could not fetch all events!', error))
-        raise error
