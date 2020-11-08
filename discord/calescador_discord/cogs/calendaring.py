@@ -59,7 +59,7 @@ class Calendaring(commands.Cog):
             title=f':calendar_spiral: New Event: {event.name}'
         )
         embed.set_footer(text='React with the number of people you want to bring!')
-        embed.add_field(name=':clock2: Date & Time', value=format_datetime_span(event.start_dt, event.end_dt))
+        embed.add_field(name=':clock2: Date', value=format_datetime_span(event.start_dt, event.end_dt))
 
         if event.location:
             embed.add_field(name=':map: Location', value=event.location)
