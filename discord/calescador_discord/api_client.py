@@ -22,7 +22,7 @@ class APIClient:
                     text = await r.text()
                     try:
                         # Use exception message from the error website
-                        message = BeautifulSoup(text).select_one('noscript > pre')
+                        message = BeautifulSoup(text, 'html.parser').select_one('noscript > pre')
                         text = message.get_text()
 
                         if not self.show_server_stacktraces:
