@@ -22,7 +22,7 @@ class Calendaring(commands.Cog):
         self.web_url = web_url
 
     def parse_event(self, raw: str, discord_message_id):
-        """Parses an event from the syntax `[day/date], [time(s)], [name]`."""
+        """Parses an event from the syntax `[day/date], [time(s)], [name], [location]?`."""
 
         split = [s.strip() for s in raw.split(',')]
 
@@ -31,7 +31,8 @@ class Calendaring(commands.Cog):
 
         day = parse_date(split[0])
         times = [parse_time(s.strip()) for s in split[1].split('-')]
-        name = split[2]
+        name = split[2].capitalize()
+        location = split[3].capitalize() if len(split) > 3 else None
 
         if name == "":
             raise ValueError('Name should not be empty!')
@@ -43,9 +44,10 @@ class Calendaring(commands.Cog):
         end_dt = datetime.combine(day, times[1]) if len(times) > 1 else start_dt + timedelta(hours=2)
 
         return Event(
-            name=name.capitalize(),
+            name=name,
             start_dt=start_dt,
             end_dt=end_dt,
+            location=location,
             discord_message_id=discord_message_id
         )
 
@@ -54,10 +56,14 @@ class Calendaring(commands.Cog):
         event = self.parse_event(' '.join(args), ctx.message.id)
 
         embed = Embed(
-            title=f':calendar_spiral: New Event: {event.name}',
-            description=format_datetime_span(event.start_dt, event.end_dt)
+            title=f':calendar_spiral: New Event: {event.name}'
         )
         embed.set_footer(text='React with the number of people you want to bring!')
+        embed.add_field(name=':clock2: Date & Time', value=format_datetime_span(event.start_dt, event.end_dt))
+
+        if event.location:
+            embed.add_field(name=':map: Location', value=event.location)
+
         sent = await ctx.send(embed=embed)
 
         event.discord_message_id = sent.id
@@ -69,11 +75,12 @@ class Calendaring(commands.Cog):
     @create.error
     async def create_error(self, ctx, error):
         await ctx.send(embed=error_embed('\n'.join([
-            'Please use the syntax: `[day/date], [time(s)], [name]`',
+            'Please use the syntax: `[day/date], [time(s)], [name], [location]?`',
             '',
             'For example:',
-            '`monday, 19:00, Some event`',
-            '`28.10.2020, 16:00-17:00, Another event`'
+            '`monday, 19:00, My awesome event`',
+            '`tue, 18:45, Another event, Some location`'
+            '`28.10.2020, 16:00-17:00, Yet another event`'
         ]), error))
 
     # TODO: Add option to reset user accounts on the server without deleting them?
