@@ -176,8 +176,8 @@ class Calendaring(commands.Cog):
             event = await self.api.event_by_discord_message_id(message.id)
             await self.remove_attendance(user, event.id, count)
 
-    def events_embed(self, events: List[Event]) -> Embed:
-        embed = Embed(title=':calendar_spiral: All Events')
+    def events_embed(self, title: str, events: List[Event]) -> Embed:
+        embed = Embed(title=f':calendar_spiral: {title}')
 
         for (date, events) in itertools.groupby(events, lambda e: e.start_dt.date()):
             lines = [f'{format_time(e.start_dt.time())} - {format_time(e.end_dt.time())}: {e.name} (ID: {e.id})' for e in events]
@@ -188,12 +188,12 @@ class Calendaring(commands.Cog):
     @commands.command(brief='Fetches upcoming events in the calendar')
     async def upcoming(self, ctx):
         events = await self.api.upcoming_events()
-        await ctx.send(embed=self.events_embed(events))
+        await ctx.send(embed=self.events_embed('Upcoming Events', events))
 
     @commands.command(brief='Fetches all events in the calendar')
     async def events(self, ctx):
         events = await self.api.events()
-        await ctx.send(embed=self.events_embed(events))
+        await ctx.send(embed=self.events_embed('All Events', events))
 
     @events.error
     async def events_error(self, ctx, error):
