@@ -1,0 +1,19 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.link-bar {
+  text-align: center;
+}
+
+.splash {
+  margin: 0 auto;
+}
+
