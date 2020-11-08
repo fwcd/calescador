@@ -11,6 +11,7 @@
 
     <!-- Icons -->
     <link rel="shortcut-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>

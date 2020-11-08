@@ -8,6 +8,7 @@
 
         <!-- Icons -->
         <link rel="shortcut-icon" href="favicon.ico">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
