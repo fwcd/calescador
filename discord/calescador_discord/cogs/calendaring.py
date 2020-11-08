@@ -205,3 +205,11 @@ class Calendaring(commands.Cog):
     @events.error
     async def events_error(self, ctx, error):
         await ctx.send(embed=error_embed('Could not fetch all events!', error))
+
+    @commands.command(brief='Fetches the website URL')
+    async def web(self, ctx):
+        await ctx.send(f'<{self.web_url}>')
+
+    @commands.command(brief='Fetches the iCalendar URL')
+    async def ics(self, ctx):
+        await ctx.send(f'<{self.web_url}/cal/v1/all.ics>')
