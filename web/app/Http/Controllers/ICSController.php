@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Jsvrcek\ICS\Model\Calendar as ICalendar;
 use Jsvrcek\ICS\Model\CalendarEvent as ICalendarEvent;
 use Jsvrcek\ICS\Model\Description\Location as ICalendarLocation;
+use Jsvrcek\ICS\Model\Relationship\Attendee as ICalendarAttendee;
 use Jsvrcek\ICS\Utility\Formatter as ICalendarFormatter;
 use Jsvrcek\ICS\CalendarStream as ICalendarStream;
 use Jsvrcek\ICS\CalendarExport as ICalendarExport;
@@ -20,7 +21,7 @@ class ICSController extends Controller
         $ical = new ICalendar();
         $ical->setProdId('-//calescador//calescador//EN');
 
-        foreach (\App\Models\Event::get() as $event) {
+        foreach (\App\Models\Event::with('users')->get() as $event) {
             $icalLocation = new ICalendarLocation;
             $icalLocation->setName($event->location);
 
@@ -32,10 +33,14 @@ class ICSController extends Controller
                 ->setUid($event->id)
                 ->addLocation($icalLocation);
 
+            foreach ($event->users as $user) {
+                $icalAttendee = new ICalendarAttendee(new ICalendarFormatter);
+                $icalAttendee->setName($user->name);
+                $icalEvent->addAttendee($icalAttendee);
+            }
+
             $ical->addEvent($icalEvent);
         }
-
-        // TODO: Attendees
 
         $icalExport = new ICalendarExport(new ICalendarStream, new ICalendarFormatter);
         $icalExport->addCalendar($ical);
