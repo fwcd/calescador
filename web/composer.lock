@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "04171755b8da1c090b7130a4873a1cda",
+    "content-hash": "a4730ffca58d8aed9ac468769cd98fb7",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -882,6 +882,58 @@
                 "source": "https://github.com/guzzle/psr7/tree/1.7.0"
             },
             "time": "2020-09-30T07:37:11+00:00"
+        },
+        {
+            "name": "jsvrcek/ics",
+            "version": "0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jasvrcek/ICS.git",
+                "reference": "2d7203e65637713a8e38ac3c65d609ef8a05feba"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jasvrcek/ICS/zipball/2d7203e65637713a8e38ac3c65d609ef8a05feba",
+                "reference": "2d7203e65637713a8e38ac3c65d609ef8a05feba",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4 || ^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.8 || ^5.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Jsvrcek\\ICS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Justin Svrcek",
+                    "homepage": "https://github.com/jasvrcek"
+                }
+            ],
+            "description": "abstraction layer for creating multi-byte safe RFC 5545 compliant .ics files",
+            "homepage": "https://github.com/jasvrcek/ICS",
+            "keywords": [
+                ".ics",
+                "RFC 5545",
+                "calendar",
+                "export",
+                "ical",
+                "multi-byte safe"
+            ],
+            "support": {
+                "issues": "https://github.com/jasvrcek/ICS/issues",
+                "source": "https://github.com/jasvrcek/ICS/tree/master"
+            },
+            "time": "2020-02-27T15:59:00+00:00"
         },
         {
             "name": "laravel/framework",
