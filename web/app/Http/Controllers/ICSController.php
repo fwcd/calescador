@@ -35,7 +35,9 @@ class ICSController extends Controller
 
             foreach ($event->users as $user) {
                 $icalAttendee = new ICalendarAttendee(new ICalendarFormatter);
-                $icalAttendee->setName($user->name);
+                $icalAttendee
+                    ->setName($user->name)
+                    ->setParticipationStatus("ACCEPTED");
                 $icalEvent->addAttendee($icalAttendee);
             }
 
