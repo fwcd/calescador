@@ -14,6 +14,7 @@ The backend together with web, REST and calendar interfaces.
 * Set up the Laravel project:
     * Make sure to have a recent version of PHP and Composer installed, e.g. using `apt install php php-mbstring php-dom php-mysql`
     * Run `composer install` to install the dependencies
+    * If necessary, run `npm install && npm run dev` to setup the views
     * Run `php artisan key:generate` to generate an application-specific key (locally).
     * Run `php artisan migrate` to create the database tables
 
