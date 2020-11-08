@@ -9,6 +9,9 @@
 
     <title>{{ config('app.name', 'Calescador Web') }}</title>
 
+    <!-- Icons -->
+    <link rel="shortcut-icon" href="favicon.ico">
+
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
 

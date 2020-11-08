@@ -6,6 +6,9 @@
 
         <title>Calescador Web</title>
 
+        <!-- Icons -->
+        <link rel="shortcut-icon" href="favicon.ico">
+
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
 
