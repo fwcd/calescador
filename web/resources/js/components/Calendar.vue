@@ -20,9 +20,15 @@
                 calendarOptions: {
                     plugins: [dayGridPlugin, interactionPlugin],
                     interactionView: 'dayGridMonth',
+                    eventTimeFormat: {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    },
                     events: events.map(e => ({
                         title: e.name,
-                        date: e.start_dt
+                        start: e.start_dt,
+                        end: e.end_dt
                     }))
                 }
             };

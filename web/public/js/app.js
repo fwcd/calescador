@@ -17287,10 +17287,16 @@ __webpack_require__.r(__webpack_exports__);
       calendarOptions: {
         plugins: [_fullcalendar_daygrid__WEBPACK_IMPORTED_MODULE_1__["default"], _fullcalendar_interaction__WEBPACK_IMPORTED_MODULE_2__["default"]],
         interactionView: 'dayGridMonth',
+        eventTimeFormat: {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+        },
         events: events.map(function (e) {
           return {
             title: e.name,
-            date: e.start_dt
+            start: e.start_dt,
+            end: e.end_dt
           };
         })
       }
